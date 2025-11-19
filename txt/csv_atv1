@@ -1,0 +1,46 @@
+import os
+from dataclasses import dataclass
+
+os.system("cls")
+
+@dataclass
+class Usuário:
+    nome: str
+    data_nascimento: str
+    rg: str
+    cpf: str
+
+    def mostrar_dados(self):
+        return f"Nome: {self.nome}\nData de nascimento: {self.data_nascimento}\nRG: {self.rg}\nCPF: {self.cpf}"
+
+qtd = int(input("Quantos usuários você deseja cadastrar? "))
+usuários = []
+
+print("Solicitando dados do usuário.")
+for i in range(qtd):
+    print(f"\nCadastro da pessoa {i + 1}")
+    nome = input("Nome: ")
+    data_nascimento = input("Data de nascimento: ")
+    rg =input("RG: ")
+    cpf = input("CPF: ")
+
+    usuário = Usuário(nome, data_nascimento, rg, cpf)
+    usuários.append(usuário)
+
+print()
+print("Salvando dados.")
+arquivo = "dados_usuários.csv"
+
+with open(arquivo, "a", encoding="utf-8") as arquivo_usuários:
+    for usuário in usuários:
+        arquivo_usuários.write(f"{usuário.mostrar_dados()}\n\n")
+print("Salvo com sucesso!")
+
+print("\nExibindo todos os usuários:\n")
+try:
+    with open(arquivo, "r", encoding="utf-8") as arquivo_leitura:
+        lista_todos_usuários = arquivo_leitura.readlines()
+        for linha in lista_todos_usuários:
+            print(linha.strip())
+except FileNotFoundError:
+    print("O arquivo não foi encontrado.")
