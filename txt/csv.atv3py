@@ -1,0 +1,93 @@
+import os
+from dataclasses import dataclass
+
+os.system("cls" if os.name == "nt" else "clear")
+
+@dataclass
+class Cliente:
+    nome: str
+    data_nascimento: str
+    endereco: str
+
+    def mostrar_dados_clientes(self):
+        return f"Nome: {self.nome}\nData de nascimento: {self.data_nascimento}\nEndereço: {self.endereco}"
+
+@dataclass
+class Funcionario:
+    nome: str
+    data_admissao: str
+    matricula: str
+    endereco: str
+
+    def mostrar_dados_funcionarios(self):
+        return f"Nome: {self.nome}\nData de admissão: {self.data_admissao}\nMatrícula: {self.matricula}\nEndereço: {self.endereco}"
+
+def cadastrar_clientes(qtd):
+    clientes = []
+    for i in range(qtd):
+        print(f"\nCadastro da pessoa {i + 1}")
+        nome = input("Nome: ")
+        data_nascimento = input("Data de nascimento: ")
+        endereco = input("Endereço: ")
+        cliente = Cliente(nome, data_nascimento, endereco)
+        clientes.append(cliente)
+    return clientes
+
+def cadastrar_funcionarios(qtd_func):
+    funcionarios = []
+    for i in range(qtd_func):
+        print(f"\nCadastro do funcionário {i + 1}")
+        nome = input("Nome: ")
+        data_admissao = input("Data de admissão: ")
+        matricula = input("Matrícula: ")
+        endereco = input("Endereço: ")
+        funcionario = Funcionario(nome, data_admissao, matricula, endereco)
+        funcionarios.append(funcionario)
+    return funcionarios
+
+def salvar_dados_em_csv(arquivo, dados, cabecalho):
+    if not os.path.exists(arquivo):
+        with open(arquivo, "w", encoding="utf-8") as file:
+            file.write(cabecalho)
+    
+
+    with open(arquivo, "a", encoding="utf-8") as file:
+        for dado in dados:
+            file.write(f"{dado}\n")
+
+def exibir_dados_arquivo(arquivo):
+    try:
+        with open(arquivo, "r", encoding="utf-8") as file:
+            for linha in file.readlines():
+                print(linha.strip())
+    except FileNotFoundError:
+        print(f"O arquivo {arquivo} não foi encontrado.")
+
+
+def main():
+    qtd_clientes = int(input("Quantos clientes você deseja cadastrar? "))
+    clientes = cadastrar_clientes(qtd_clientes)
+
+    qtd_funcionarios = int(input("Quantos Funcionários você deseja cadastrar? "))
+    funcionarios = cadastrar_funcionarios(qtd_funcionarios)
+
+    arquivo_clientes = "dados_clientes.csv"
+    arquivo_funcionarios = "dados_funcionarios.csv"
+
+    cabecalho_clientes = "Nome, Data de nascimento, Endereço\n"
+    cabecalho_funcionarios = "Nome, Data de admissão, Matrícula, Endereço\n"
+
+    print("Salvando dados dos clientes...")
+    salvar_dados_em_csv(arquivo_clientes, [f"{cliente.nome}, {cliente.data_nascimento}, {cliente.endereco}" for cliente in clientes], cabecalho_clientes)
+
+    print("Salvando dados dos funcionários...")
+    salvar_dados_em_csv(arquivo_funcionarios, [f"{funcionario.nome}, {funcionario.data_admissao}, {funcionario.matricula}, {funcionario.endereco}" for funcionario in funcionarios], cabecalho_funcionarios)
+
+    print("Dados dos clientes cadastrados:")
+    exibir_dados_arquivo(arquivo_clientes)
+
+    print("\nDados dos funcionários cadastrados:")
+    exibir_dados_arquivo(arquivo_funcionarios)
+
+if __name__ == "__main__":
+    main()
